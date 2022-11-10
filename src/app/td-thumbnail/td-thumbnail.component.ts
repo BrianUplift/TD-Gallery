@@ -18,6 +18,9 @@ export class TdThumbnailComponent implements OnInit {
 
   tds: any[]
 
+  score: string
+  partyScore: number
+
   compareTds: any[]
 
   constructor(private tdService: TdService, 
@@ -26,6 +29,25 @@ export class TdThumbnailComponent implements OnInit {
   
   ngOnInit() {
     this.tds = this.tdService.getTds()
+    this.score = './assets/images/did_not_vote.jpg'
+
+    if (this.td && this.td.score) {
+      switch(this.td.score) {
+        case 'positive': {
+          this.score = './assets/images/positive.jpg'
+          break;
+        }
+        case 'negative': {
+          this.score = './assets/images/negative.jpg'
+          break;
+        }
+        default: {
+          this.score = './assets/images/did_not_vote.jpg'
+        }
+      }
+
+      this.partyScore = Math.round(this.tdService.getPartyScore(this.td.partyName))
+    }
   }
   
 compareVal(event) {
@@ -37,8 +59,7 @@ compareVal(event) {
   else{
       this.td.comparison=false;
       this.compareTds = this.tds.filter(td => td.comparison == true);
-
-    }
+  }
 }
 
 spotChange(){
